@@ -50,20 +50,20 @@
 // }
 // // isAllowGroupsMessages();
 
-// const message = async () => {
-//   const method = 'messages.send'
-//   const params = {
-//     peer_id: '6441755',
-//     message: 'testbot',
-//     random_id: Date.now(),
-//   }
-//   const getpeer_id = await callAPI('messages.getConversations')
+const message = async () => {
+  const method = 'messages.send'
+  const params = {
+    peer_id: '6441755',
+    message: 'testbot',
+    random_id: Date.now(),
+  }
+  const getpeer_id = await callAPI('messages.getConversations')
 
-//   console.log(getpeer_id.response.items);
-//   // const data = await callAPI(method, params);
-//   // console.log(data);
-// }
-// message();
+  console.log(getpeer_id.response.items);
+  // const data = await callAPI(method, params);
+  // console.log(data);
+}
+message();
 
 
 // // const reqUserRight = async () => {
