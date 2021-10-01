@@ -16,8 +16,7 @@ const MessageForm = () => {
             group_id: group_id,
             message: e.target.message.value,
         }
-
-        axios.post(`http://localhost:3000/users/sendMessage`, group)
+        await axios.post('/users/sendMessage', group)
         e.target.title.value = ''
         e.target.message.value = ''
     }
@@ -33,9 +32,8 @@ const MessageForm = () => {
                 <Row className="d-flex justify-content-center">
                     <Col xs="6" md="4" >
                         <Form.Label column sm="5">Title</Form.Label>
-                        <Form.Control size="sm" type="text" name="title" placeholder="Enter title" />
+                        <Form.Control size="sm" type="text" name="title" placeholder="Enter title" autocomplete="off"/>
                     </Col>
-
                 </Row>
                 <Row className="d-flex justify-content-center">
                     <Col xs="6" md="4" >
@@ -52,15 +50,7 @@ const MessageForm = () => {
                 <Row className="d-flex justify-content-center">
                     <Col xs="6" md="4">
                         <Form.Label column sm="5">Message</Form.Label>
-                        <Form.Control size="sm" type="text" name="message" placeholder="message" />
-                    </Col>
-                </Row>
-                <Row className="d-flex justify-content-center">
-                    <Col xs="6" md="4">
-                    <Form.Group controlId="formFileMultiple" className="mb-3">
-                        <Form.Label>Files</Form.Label>
-                        <Form.Control type="file" multiple />
-                    </Form.Group>
+                        <Form.Control size="sm" type="text" name="message" placeholder="message" autocomplete="off"/>
                     </Col>
                 </Row>
                 <Button className="mt-2" variant="primary" type="submit">

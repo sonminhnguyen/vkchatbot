@@ -2,14 +2,19 @@
 
 const config = {
   development: {
-    client: 'mysql',
-    connection: {
-      database: 'vkchat',
-      user:     'root',
-      password: ''
-    },
-    useNullAsDefault: true
+    client: 'pg',
+    connection: 'postgres://postgres:postgres@localhost/vkchat',
+    // useNullAsDefault: true
   },
+  // development: {
+  //   client: 'mysql',
+  //   connection: {
+  //     database: 'vkchat',
+  //     user:     'root',
+  //     password: ''
+  //   },
+  //   useNullAsDefault: true
+  // },
 
   production: {
     client: 'postgresql',

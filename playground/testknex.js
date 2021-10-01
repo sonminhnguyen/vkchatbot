@@ -26,8 +26,11 @@ const test = async () => {
   // const group = await knex('groups')
   // console.log(group.map(e => e.group_name));
   // console.log([...group.group_name]);
-  const groups = await knex('groups.id_group').from('groups').whereNotIn('groups.id_group', knex.select('students.group').from('students').where('students.id_vk', peer_id))
-  console.log(groups);
+  // const groups = await knex('groups.id_group').from('groups').whereNotIn('groups.id_group', knex.select('students.group').from('students').where('students.id_vk', peer_id))
+  // console.log(groups);
+  const user = await knex('users').where('username', 'admin')
+  console.log(user);
 }
+
 
 test();
