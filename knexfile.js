@@ -2,21 +2,14 @@
 
 const config = {
   development: {
-    client: 'mysql',
-    connection: {
-      database: 'vkchat',
-      user:     'root',
-      password: ''
-    },
-    useNullAsDefault: true
+    client: 'pg',
+    connection: 'postgres://postgres:postgres@localhost/vkchat',
   },
-
   production: {
-    client: 'postgresql',
+    client: 'pq',
     connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
     },
     pool: {
       min: 2,
