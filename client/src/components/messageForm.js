@@ -32,7 +32,7 @@ const MessageForm = () => {
                 <Row className="d-flex justify-content-center">
                     <Col xs="6" md="4" >
                         <Form.Label column sm="5">Title</Form.Label>
-                        <Form.Control size="sm" type="text" name="title" placeholder="Enter title" autocomplete="off"/>
+                        <Form.Control size="sm" type="text" name="title" placeholder="Enter title" autoComplete="off"/>
                     </Col>
                 </Row>
                 <Row className="d-flex justify-content-center">
@@ -50,7 +50,7 @@ const MessageForm = () => {
                 <Row className="d-flex justify-content-center">
                     <Col xs="6" md="4">
                         <Form.Label column sm="5">Message</Form.Label>
-                        <Form.Control size="sm" type="text" name="message" placeholder="message" autocomplete="off"/>
+                        <Form.Control size="sm" type="text" name="message" placeholder="message" autoComplete="off"/>
                     </Col>
                 </Row>
                 <Button className="mt-2" variant="primary" type="submit">

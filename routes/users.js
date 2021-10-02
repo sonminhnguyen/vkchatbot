@@ -5,7 +5,6 @@ const knex = require('../database')
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const SECRET = "any_secret_you_want_to_use"
-const { v4: uuidv4 } = require('uuid');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -17,7 +16,6 @@ router.get("/getUsers", async (req, res, next) => {
   res.json(users)
 })
 
-//test
 router.post("/newuser", async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10)
   try {
@@ -52,9 +50,6 @@ router.post("/login", async (req, res, next) => {
   }
 })
 
-router.get('/logout', (req, res, next) => {
-
-})
 
 router.get("/verify", (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1]
