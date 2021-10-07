@@ -1,16 +1,28 @@
 const passport = require('passport');
 const knex = require('../database');
+const bcrypt = require("bcrypt")
+const LocalStrategy = require('passport-local').Strategy;
 
-module.exports = () => {
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
 
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
 
-  passport.deserializeUser((id, done) => {
-    knex('users').where({id}).first()
-    .then((user) => { done(null, user); })
-    .catch((err) => { done(err,null); });
-  });
+passport.use('local', new LocalStrategy(async(username, password, cb) => {
+  const user = await knex('users').where('username', username).first()
+  if (!user) {
+      return cb("No user by that name")
+  } else {
+    const isAuthenticated = await bcrypt.compare(password, user.password) 
+    if(isAuthenticated) {
+      cb(null, user)
+    } else {
+      cb(null, false, { message: 'Incorrect username or password.' })
+    }
+  }
+}))
 
-};
+module.exports = passport;
