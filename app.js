@@ -10,7 +10,7 @@ const bot = require('./bots')
 let cors = require("cors");
 
 require('dotenv').config()
-
+require('./middleware/passport');
 
 // console.log(bot.middlewares);
 
@@ -24,19 +24,21 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-
-app.use(passport.initialize());
-// app.use(passport.session());
 app.use(session({secret:'Keep it secret'
 ,name:'uniqueSessionID'
 ,saveUninitialized:false}))
 
+
+
 app.use(cors());
-app.use(bodyParser.json());
+app.use(cookieParser());
+// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
