@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Form, Row, Col, Button } from 'react-bootstrap'
 import { getGroups } from './data';
 
-const MessageForm = () => {
+const MessageForm = ({ user }) => {
     const [groups, setGroups] = useState([])
     const [group_id, setGroup_Id] = useState('1')
     const handleSelectGroupId = (e) => {
@@ -15,6 +15,7 @@ const MessageForm = () => {
             title: e.target.title.value,
             group_id: group_id,
             message: e.target.message.value,
+            profile: user.profile
         }
         await axios.post('/users/sendMessage', group)
         e.target.title.value = ''
@@ -27,8 +28,7 @@ const MessageForm = () => {
 
     return (
         <>
-            <p>message site</p>
-            <Form onSubmit={handleSendMessage}>
+            <Form className="mx-auto text-center" onSubmit={handleSendMessage}>
                 <Row className="d-flex justify-content-center">
                     <Col xs="6" md="4" >
                         <Form.Label column sm="5">Title</Form.Label>

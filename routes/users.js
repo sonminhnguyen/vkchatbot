@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 const bot = require('../bots')
-// const passport = require('passport');
 const passport = require('../middleware/passport');
 const knex = require('../database')
 const bcrypt = require('bcrypt')
@@ -22,7 +21,8 @@ router.post("/signUp",
       try {
         await knex("users").insert({
           username: req.body.username,
-          password: hashedPassword
+          password: hashedPassword,
+          profile: req.body.profile
         })
         res.status(200).send("success")
       } catch (e) {
@@ -38,10 +38,15 @@ router.post("/login",
   passport.authenticate('local'), 
   async (req, res, next) => {
     try {
-      user = req.user.username;
+      const user = {
+        username: req.user.username,
+        profile: req.user.profile,
+        admin: req.user.admin
+      }
       jwt.sign(user, SECRET, (error, token) => {
         res.status(200).send({ user, token })
-    })
+      })
+
     }
     catch (e) {
       res.status(400).send()
@@ -59,24 +64,72 @@ router.get('/getGroups',
 router.get("/getUsers",
   auth,
   async (req, res, next) => {
-    console.log(req.isAuthenticated());
     const users = await knex("users")
-    res.json(users)
+    res.send(JSON.stringify(users));
   }
 )
 
 router.post('/sendMessage',
   auth,
   async (req, res, next) => {
-    const { title, group_id, message } = req.body;
+    console.log(req.isAuthenticated());
+    const { title, group_id, message, profile } = req.body;
+    console.log(req.body);
     let users = await knex('students').where('students.group', group_id).select('id_vk')
     users = users.map(user => user.id_vk)
     if (users.length != 0) {
       await bot.sendMessage(users, title);
       await bot.sendMessage(users, message);
+      await bot.sendMessage(users, 'Best regards,');
+      await bot.sendMessage(users, profile);
       res.sendStatus(200);
     } else {
       res.send('No students in this group')
+    }
+  }
+)
+
+router.post('/update',
+  // auth,
+  async (req, res, next) => {
+    const {username, password, newpassword, profile} = req.body;
+
+    const userPassword = await knex('users').where('username', username).select('password').first()
+    const isCorrectPassword = await bcrypt.compare(password, userPassword.password) 
+
+    if(isCorrectPassword) {
+      const hashedPassword = await bcrypt.hash(newpassword, 10)
+      const user = {
+        username,
+        password: hashedPassword,
+        profile
+      }
+      try {
+        await knex('users').where('username', username).update({ ...user })
+        res.status(200).send('update success!')
+      }
+      catch (e) {
+        res.status(400).send({ "error": e })
+      }
+    } else {
+      res.status(400).send({ error: 'old password not correct!' })
+    }
+  }
+)
+router.post('/remove',
+  auth,
+  async (req, res, next) => {
+    if(req.user.admin) {
+      console.log(req.body);
+      try {
+        await knex('users').where('username', req.body.username).del()
+        res.status(200).send('remove success!')
+      }
+      catch (e) {
+        res.send({ "error": e })
+      }
+    } else {
+      res.send({ message: 'You have no permission.' })
     }
   }
 )
