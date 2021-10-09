@@ -5,6 +5,12 @@ const getGroups = async () => {
     return groups.data
 }
 
+const getUsers = async () => {
+    const users = await axios.get('/users/getUsers')
+    return users.data
+}
+
 export {
-    getGroups
+    getGroups,
+    getUsers
 } 
