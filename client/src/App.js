@@ -6,6 +6,7 @@ import Authenticate from './components/login';
 import Profile from './components/profile'
 import MessageForm from './components/messageForm';
 import User from './components/users'
+import Upload from './components/upload'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import '@fortawesome/fontawesome-free/css/all.min.css'; 
 // import 'bootstrap-css-only/css/bootstrap.min.css'; 
@@ -57,9 +58,14 @@ const App = () => {
             </Nav>
               : <Redirect to="/" />
             }
+            <Nav>
+              <NavItem eventkey={3} href="/Upload">
+                <Nav.Link as={Link} to="/Upload" >Upload</Nav.Link>
+              </NavItem>
+            </Nav>
             <Nav className="ml-auto" >
-              <NavItem eventkey={2} href="/users">
-                <Nav.Link as={Link} onClick={handeLogOut}>LogOut</Nav.Link>
+              <NavItem eventkey={4} href="/login">
+                <Nav.Link as={Link} to="/login" onClick={handeLogOut}>LogOut</Nav.Link>
               </NavItem>
             </Nav>
           </Navbar.Collapse>
@@ -75,6 +81,10 @@ const App = () => {
         <Route exact path="/profile">
           <Profile user={user.user} />
         </Route>
+        <Route exact path="/Upload">
+          <Upload  />
+        </Route>
+        
       </Switch>
       </div>
     </Router>

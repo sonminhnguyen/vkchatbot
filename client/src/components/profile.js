@@ -21,19 +21,19 @@ const Profile = ({ user }) => {
     return (
         <>
             <Form className="mx-auto text-center" onSubmit={handleUpdate}>
-                <Form.Group className="w-25 mx-auto">
+                <Form.Group className="w-50 mx-auto">
                     <Form.Label>Username</Form.Label>
                     <Form.Control type="text" name="username" defaultValue={userInfo.username}  autoComplete="off" />
                 </Form.Group>
-                <Form.Group className="w-25 mx-auto">
+                <Form.Group className="w-50 mx-auto">
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="text" name="password" defaultValue=''  autoComplete="off" />
                 </Form.Group>
-                <Form.Group className="w-25 mx-auto">
+                <Form.Group className="w-50 mx-auto">
                     <Form.Label>New Password</Form.Label>
                     <Form.Control type="text" name="newpassword" defaultValue=''  autoComplete="off" />
                 </Form.Group>
-                <Form.Group className="w-25 mx-auto">
+                <Form.Group className="w-50 mx-auto">
                     <Form.Label>Profile</Form.Label>
                     <Form.Control type="text" name="profile" defaultValue={userInfo.profile}  autoComplete="off" />
                 </Form.Group>

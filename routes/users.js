@@ -7,11 +7,82 @@ const bcrypt = require('bcrypt')
 const jwt = require("jsonwebtoken")
 const auth = require('../middleware/auth')
 const SECRET = "any_secret_you_want_to_use"
-
+const axios = require('axios')
+var FormData = require('form-data');
+var fs = require('fs');
+const path = require('path')
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
+
+const multer = require('multer')
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, 'uploads/')
+  },
+  filename: function(req, file, cb) {
+    // cb(null, file.originalname + '.rar');
+    cb(null, file.originalname);
+}
+})
+const upload = multer({ 
+  storage:storage,
+  limits: {
+    fileSize: 2000000
+  },
+  fileFilter(req, file, cb) {
+    if(!file.originalname.match(/\.(jpg|jpeg|png|rar|zip|doc|docx|pdf)$/)) {
+        return cb(new Error('Please upload jpg, jpeg, png, rar, zip, doc, docx, pdf files'))
+    }
+    cb(undefined, true)
+  }
+})
+
+router.post('/upload', 
+  upload.single('file'),
+  // auth,
+  async (req, res) => {
+    const url = await bot.execute('docs.getWallUploadServer', {
+      group_id: '207360925'
+    })
+    const filedir = path.join(__dirname, '..', '/uploads');
+    const filename = path.join(__dirname, '..', '/uploads', req.file.originalname );
+    var form = new FormData();
+    form.append('file', fs.createReadStream(filename));
+
+    // const upload = await axios.post(url.upload_url, form, {
+    //   headers: {
+    //     ...form.getHeaders(),
+    //   }
+    // })
+
+    // const save = await bot.execute('docs.save', {
+    //   file: upload.data.file,
+    // })
+    // console.log(save);
+
+    // const upload = {
+    //   id_user: 
+    // }
+
+    // console.log(req.user);
+    // await knex('uploads').insert({ ...user })
+
+    // fs.readdir(filedir, (err, files) => {
+    //   if (err) console.log(err);
+    //   for (const file of files) {
+    //       fs.unlink(path.join(filedir, file), err => {
+    //           if (err) console.log(err);
+    //       });
+    //   }
+    // });
+    res.send("success")
+}, (error, req, res, next) => {
+  res.status(400).send({error: error.message})
+})
+
 
 router.post("/signUp",
   auth,
@@ -133,6 +204,8 @@ router.post('/remove',
     }
   }
 )
+
+
 
 module.exports = router;
 
