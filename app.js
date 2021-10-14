@@ -28,8 +28,6 @@ app.use(session({secret:'Keep it secret'
 ,name:'uniqueSessionID'
 ,saveUninitialized:false}))
 
-
-
 app.use(cors());
 app.use(cookieParser());
 // app.use(bodyParser.json());
