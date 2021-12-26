@@ -11,6 +11,8 @@ const axios = require('axios')
 var FormData = require('form-data');
 var fs = require('fs');
 const path = require('path')
+
+require('dotenv').config()
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   res.send('respond with a resource');
@@ -23,7 +25,6 @@ const storage = multer.diskStorage({
       cb(null, 'uploads/')
   },
   filename: function(req, file, cb) {
-    // cb(null, file.originalname + '.rar');
     cb(null, file.originalname);
 }
 })
@@ -40,49 +41,68 @@ const upload = multer({
   }
 })
 
-router.post('/upload', 
-  upload.single('file'),
+router.post('/deleteUpload', 
+  // auth, 
+  async (req, res, next) => {
+  owner_id = await knex("uploads").where("uploads.id_user", req.user.id_user).select("owner_id")
+  const response = await bot.execute('docs.delete', {
+    // token: process.env.TOKEN,
+    owner_id,
+    doc_id: req.body.doc_id
+  })
+  console.log(response);
+})
+
+router.post("/upload", 
   // auth,
-  async (req, res) => {
+  upload.single('file'),
+  async (req, res, next) => {
+    //??
+    if(!req.file) {
+      return next()
+    }
     const url = await bot.execute('docs.getWallUploadServer', {
-      group_id: '207360925'
+      group_id: process.env.GROUP_ID
     })
+
     const filedir = path.join(__dirname, '..', '/uploads');
     const filename = path.join(__dirname, '..', '/uploads', req.file.originalname );
+
     var form = new FormData();
     form.append('file', fs.createReadStream(filename));
 
-    // const upload = await axios.post(url.upload_url, form, {
-    //   headers: {
-    //     ...form.getHeaders(),
-    //   }
-    // })
+    const upload = await axios.post(url.upload_url, form, {
+      headers: {
+        ...form.getHeaders(),
+      }
+    })
 
-    // const save = await bot.execute('docs.save', {
-    //   file: upload.data.file,
-    // })
-    // console.log(save);
+    const save = await bot.execute('docs.save', {
+      file: upload.data.file,
+    })
+    console.log(save);
+    const uploadDB = {
+      id_user: req.user.id_user,
+      owner_id: save.doc.owner_id,
+      id_doc: save.doc.id,
+      title: save.doc.title,
+      url: save.doc.url
+    }
+    await knex('uploads').insert({ ...uploadDB })
 
-    // const upload = {
-    //   id_user: 
-    // }
+    fs.readdir(filedir, (err, files) => {
+      if (err) console.log(err);
+      for (const file of files) {
+          fs.unlink(path.join(filedir, file), err => {
+              if (err) console.log(err);
+          });
+      }
+    });
 
-    // console.log(req.user);
-    // await knex('uploads').insert({ ...user })
-
-    // fs.readdir(filedir, (err, files) => {
-    //   if (err) console.log(err);
-    //   for (const file of files) {
-    //       fs.unlink(path.join(filedir, file), err => {
-    //           if (err) console.log(err);
-    //       });
-    //   }
-    // });
     res.send("success")
 }, (error, req, res, next) => {
   res.status(400).send({error: error.message})
 })
-
 
 router.post("/signUp",
   auth,
@@ -124,6 +144,7 @@ router.post("/login",
     }
 })
 
+
 router.get('/getGroups',
   auth,
   async (req, res, next) => {
@@ -140,10 +161,17 @@ router.get("/getUsers",
   }
 )
 
+router.get("/getDocs",
+  auth,
+  async (req, res, next) => {
+    const docs = await knex("uploads").join("users", "uploads.id_user", "users.id_user").select("uploads.id_user", "id_doc", "title", "url", "profile")
+    res.send(JSON.stringify(docs));
+  }
+)
+
 router.post('/sendMessage',
   auth,
   async (req, res, next) => {
-    console.log(req.isAuthenticated());
     const { title, group_id, message, profile } = req.body;
     console.log(req.body);
     let users = await knex('students').where('students.group', group_id).select('id_vk')
@@ -161,7 +189,7 @@ router.post('/sendMessage',
 )
 
 router.post('/update',
-  // auth,
+  auth,
   async (req, res, next) => {
     const {username, password, newpassword, profile} = req.body;
 
@@ -204,8 +232,6 @@ router.post('/remove',
     }
   }
 )
-
-
 
 module.exports = router;
 

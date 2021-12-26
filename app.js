@@ -12,9 +12,6 @@ let cors = require("cors");
 require('dotenv').config()
 require('./middleware/passport');
 
-// console.log(bot.middlewares);
-
-
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -30,7 +27,6 @@ app.use(session({secret:'Keep it secret'
 
 app.use(cors());
 app.use(cookieParser());
-// app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { MDBDataTableV5 } from 'mdbreact';
-import CreateUser from "./createuser";
+import CreateUser from './users/createuser';
 import { getUsers } from './data';
-import DeleteUser from './deleteuser';
+import DeleteUser from './users/deleteuser';
 
 
 const User = () => {
@@ -63,7 +63,5 @@ function TopSearch ({ users }) {
         />
     )
 }
-
-
 
 export default User;

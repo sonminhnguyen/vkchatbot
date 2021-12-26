@@ -10,7 +10,13 @@ const getUsers = async () => {
     return users.data
 }
 
+const getDocs = async () => {
+    const uploads = await axios.get('/users/getDocs')
+    return uploads.data
+}
+
 export {
     getGroups,
-    getUsers
+    getUsers,
+    getDocs
 } 

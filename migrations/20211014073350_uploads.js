@@ -2,7 +2,8 @@
 exports.up = async (knex) => {
     await knex.schema.createTable('uploads', function(table) {
         table.increments('id_upload');
-        table.integer('id_user').unique().notNullable();
+        table.integer('id_user').notNullable();
+        table.integer('onwer_id').notNullable();
         table.string('id_doc').unique().notNullable();
         table.string('title').notNullable();
         table.string('url').notNullable();
