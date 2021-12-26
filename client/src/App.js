@@ -1,18 +1,8 @@
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
-import { Navbar, Container, Nav, NavItem } from 'react-bootstrap';
 import { useState } from 'react';
 import Authenticate from './components/login';
-import Profile from './components/profile'
-import MessageForm from './components/messageForm';
-import User from './components/users'
-import Upload from './components/upload'
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import '@fortawesome/fontawesome-free/css/all.min.css'; 
-// import 'bootstrap-css-only/css/bootstrap.min.css'; 
-// import '@fortawesome/fontawesome-free/js/all.js';
-// import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-
+import AppRouter, { history } from './router/AppRouter'
+import Header from './components/header'
 
 const App = () => {
   const getUser = () => {
@@ -25,12 +15,12 @@ const App = () => {
   const saveUser = user => {
     localStorage.setItem('user', JSON.stringify(user));
     setUser(user);
+    history.push('/')
   };
 
   const handeLogOut = () => {
     localStorage.removeItem('user');
     setUser('');
-    console.log('logout');
   }
 
   if(!user.token) {
@@ -38,57 +28,11 @@ const App = () => {
   }
 
   return (
-    <Router >
-      <div>
-      <Navbar className="d-flex" bg="light" expand="lg">
-        <Container>
-          <Navbar.Brand href="/">Knitu Bot</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav>
-              <NavItem eventkey={1} href="/profile">
-                <Nav.Link as={Link} to="/profile" >Profile</Nav.Link>
-              </NavItem>
-            </Nav>
-            {user.user.admin ? 
-            <Nav>
-              <NavItem eventkey={2} href="/users">
-                <Nav.Link as={Link} to="/users" >Users</Nav.Link>
-              </NavItem>
-            </Nav>
-              : <Redirect to="/" />
-            }
-            <Nav>
-              <NavItem eventkey={3} href="/Upload">
-                <Nav.Link as={Link} to="/Upload" >Upload</Nav.Link>
-              </NavItem>
-            </Nav>
-            <Nav className="ml-auto" >
-              <NavItem eventkey={4} href="/login">
-                <Nav.Link as={Link} to="/login" onClick={handeLogOut}>LogOut</Nav.Link>
-              </NavItem>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-      <Switch>
-        <Route exact path="/" >
-          <MessageForm user={user.user}/>
-        </Route>
-        <Route exact path="/users" >
-          <User />
-        </Route>
-        <Route exact path="/profile">
-          <Profile user={user.user} />
-        </Route>
-        <Route exact path="/Upload">
-          <Upload  />
-        </Route>
-        
-      </Switch>
-      </div>
-    </Router>
+    <div>
+        <AppRouter user={user} handeLogOut={handeLogOut}/>
+    </div>
   );
 }
 
 export default App;
+
